@@ -1,0 +1,17 @@
+{
+  "welcome": "Welcome to Villa Care Connect",
+  "dashboard": "Dashboard",
+  "login": "Login",
+  "logout": "Logout",
+  "language": "Language",
+  "customer": "Customer",
+  "technician": "Technician",
+  "manager": "Manager",
+  "welcomeMessage": "Welcome to the Dashboard",
+  "loginSuccessMessage": "Login successful",
+  "quickTips": "Quick Tips",
+  "todoLinkTip": "Use the todo list to manage your tasks",
+  "logoutTip": "You can logout anytime from the menu",
+  "protectedRoutesTip": "Some pages are only available for logged-in users",
+  "additionalTip": "Click on the language icon to change the application language"
+}

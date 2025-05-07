@@ -235,6 +235,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     Cookies.remove("userRole");
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("currentUser");
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
     router.push("/login");
   };
 
