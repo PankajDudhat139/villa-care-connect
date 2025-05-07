@@ -14,25 +14,32 @@ export default function Navbar() {
           </Link>
 
           <div className="flex items-center space-x-6">
-            <Link
-              href="/dashboard/customer"
-              className="text-gray-700 hover:text-blue-600"
-            >
-              Customer
-            </Link>
-            <Link
-              href="/dashboard/manager"
-              className="text-gray-700 hover:text-blue-600"
-            >
-              Manager
-            </Link>
-            <Link
-              href="/dashboard/technician"
-              className="text-gray-700 hover:text-blue-600"
-            >
-              Technician
-            </Link>
+            {(user?.role === "customer" || user?.role === "admin") && (
+              <Link
+                href="/dashboard/customer"
+                className="text-gray-700 hover:text-blue-600"
+              >
+                Customer
+              </Link>
+            )}
 
+            {(user?.role === "manager" || user?.role === "admin") && (
+              <Link
+                href="/dashboard/manager"
+                className="text-gray-700 hover:text-blue-600"
+              >
+                Manager
+              </Link>
+            )}
+
+            {(user?.role === "technician" || user?.role === "admin") && (
+              <Link
+                href="/dashboard/technician"
+                className="text-gray-700 hover:text-blue-600"
+              >
+                Technician
+              </Link>
+            )}
             {/* User Authentication Section */}
 
             {/* Conditional Rendering based on Authentication */}
