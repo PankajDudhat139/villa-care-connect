@@ -6,6 +6,7 @@ import {
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Cookies from "js-cookie";
@@ -80,6 +81,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkAuth();
   }, []);
 
+  // Define the redirectToDashboard function with useCallback
+  const redirectToDashboard = useCallback(() => {
+    if (!user) return;
+
+    switch (user.role) {
+      case "admin":
+        router.push("/");
+        break;
+      case "manager":
+        router.push("/dashboard/manager");
+        break;
+      case "customer":
+        router.push("/dashboard/customer");
+        break;
+      case "technician":
+        router.push("/dashboard/technician");
+        break;
+      default:
+        router.push("/");
+    }
+  }, [user, router]);
+
+  const canAccessCurrentRoute = () => {
+    if (!user || !pathname) return false;
+
+    const accessibleRoutes = roleRouteAccess[user.role] || [];
+    return accessibleRoutes.some(
+      (route) => pathname === route || pathname.startsWith(`${route}/`)
+    );
+  };
+
   // Second effect - check route access and set render permission
   useEffect(() => {
     if (!isLoading && isAuthenticated && user && pathname) {
@@ -116,37 +148,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // For login and register pages when not authenticated
       setCanRender(true);
     }
-  }, [pathname, user, isAuthenticated, isLoading]);
-
-  const canAccessCurrentRoute = () => {
-    if (!user || !pathname) return false;
-
-    const accessibleRoutes = roleRouteAccess[user.role] || [];
-    return accessibleRoutes.some(
-      (route) => pathname === route || pathname.startsWith(`${route}/`)
-    );
-  };
-
-  const redirectToDashboard = () => {
-    if (!user) return;
-
-    switch (user.role) {
-      case "admin":
-        router.push("/");
-        break;
-      case "manager":
-        router.push("/dashboard/manager");
-        break;
-      case "customer":
-        router.push("/dashboard/customer");
-        break;
-      case "technician":
-        router.push("/dashboard/technician");
-        break;
-      default:
-        router.push("/");
-    }
-  };
+  }, [pathname, user, isAuthenticated, isLoading, router, redirectToDashboard]);
 
   const register = (
     name: string,
@@ -175,7 +177,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("users", JSON.stringify(existingUsers));
 
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
   };
@@ -306,11 +308,11 @@ export const useAuth = () => {
 };
 
 // Updated HOC to use the canRender mechanism
-export const withRoleBasedAccess = (
-  Component: React.ComponentType,
+export const withRoleBasedAccess = <P extends object>(
+  Component: React.ComponentType<P>,
   allowedRoles: Role[]
 ) => {
-  return function ProtectedRoute(props: any) {
+  return function ProtectedRoute(props: P) {
     const { user, isAuthenticated, isLoading } = useAuth();
 
     // Don't render anything while loading

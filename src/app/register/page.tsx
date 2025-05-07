@@ -49,7 +49,7 @@ const Register = () => {
       setPassword("");
       setRole("customer");
       setSuccess("Registration successful!");
-    } catch (err) {
+    } catch {
       setError("Failed to register user");
     }
   };
